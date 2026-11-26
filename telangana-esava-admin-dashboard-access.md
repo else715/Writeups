@@ -1,4 +1,4 @@
-# Telangana Government eSava — Admin Dashboard Access
+# Telangana Government eSava - Admin Dashboard Access
 
 ## Title
 
@@ -118,13 +118,116 @@ Because this is a government service, testing should be strictly non-destructive
 
 ## Detailed Reproduction Methodology
 
-> Reproduction steps omitted from the public version.
+### Step 1 — Establish the normal user role
+
+Authenticate using the authorized test account.
+
+Document the account's intended role:
+
+```text
+Role:
+Non-administrative user
+```
+
+Do not use another person's credentials.
+
+---
+
+### Step 2 — Identify an administrative resource
+
+During authorized assessment, identify an administrative function that should not be available to the test account.
+
+The public writeup intentionally does not disclose the live administrative path.
+
+For documentation:
+
+```text
+Administrative resource:
+[REDACTED]
+```
+
+---
+
+### Step 3 — Test server-side authorization
+
+Request the restricted resource using the authorized lower-privileged account.
+
+A sanitized example:
+
+```http
+GET /[REDACTED]/admin/[REDACTED] HTTP/2
+Host: [REDACTED]
+Cookie: [REDACTED]
+```
+
+The important security question is whether the server checks the user's authorization before returning the administrative resource.
+
+---
+
+### Step 4 — Observe the response
+
+A secure implementation should respond with something similar to:
+
+```http
+HTTP/2 403 Forbidden
+
+{
+  "error": "Access denied"
+}
+```
+
+If the server instead returns the administrative interface or privileged functionality, this indicates an authorization failure.
+
+---
+
+### Step 5 — Stop after confirmation
+
+Once unauthorized access is demonstrated:
+
+- Do not enumerate administrative records.
+- Do not download citizen information.
+- Do not modify government records.
+- Do not create administrative users.
+- Do not execute administrative actions.
+- Do not attempt persistence.
+- Do not attempt to expand access beyond the minimum proof.
+
+This is especially important for government infrastructure.
 
 ---
 
 ## Request / Response Example
 
-> Request and response examples omitted from the public version.
+### Sanitized request
+
+```http
+GET /[REDACTED]/admin/dashboard HTTP/2
+Host: [REDACTED]
+Cookie: session=[REDACTED]
+Authorization: [REDACTED]
+```
+
+### Expected response
+
+```http
+HTTP/2 403 Forbidden
+Content-Type: application/json
+
+{
+  "error": "Unauthorized"
+}
+```
+
+### Observed response
+
+```http
+HTTP/2 200 OK
+Content-Type: text/html
+
+[ADMIN DASHBOARD CONTENT REDACTED]
+```
+
+The response shown here is a sanitized representation.
 
 Do not publish:
 
@@ -201,7 +304,26 @@ This is preferable to claiming broader compromise that was not demonstrated.
 
 ## Attack Scenario
 
-> Attack sequence omitted from the public version.
+A simplified attack scenario is:
+
+```text
+Attacker obtains ordinary authenticated account
+             |
+             v
+Normal user privileges
+             |
+             v
+Requests restricted administrative resource
+             |
+             v
+Server fails authorization check
+             |
+             v
+Administrative dashboard exposed
+             |
+             v
+Potential access to privileged functionality
+```
 
 If the vulnerable authorization check applies to multiple endpoints, the impact could extend beyond the dashboard itself.
 
@@ -262,7 +384,7 @@ must never determine whether the backend permits administrative access.
 Authorization must be enforced not only on:
 
 ```text
-[Administrative route redacted]
+GET /admin/dashboard
 ```
 
 but also on operations such as:
@@ -296,35 +418,6 @@ Unauthenticated → protected resource
 A broken authorization pattern can affect multiple administrative endpoints.
 
 A comprehensive remediation should therefore review the entire privilege boundary rather than patching only one URL.
-
----
-
-## Disclosure / Acknowledgement Information
-
-**Disclosure type:** Responsible security research / vulnerability disclosure
-
-**Researcher:** Manojkumar Gurram
-
-Suggested section to complete with your original records:
-
-```text
-Initial report:
-[Insert date]
-
-Report/reference ID:
-[Insert ID]
-
-Vendor acknowledgement:
-[Insert acknowledgement]
-
-Resolution:
-[Insert fixed/resolved status]
-
-Bounty:
-[Insert amount, if publicly disclosable]
-```
-
-Do not publish confidential correspondence or sensitive evidence without permission.
 
 ---
 
