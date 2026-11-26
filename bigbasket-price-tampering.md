@@ -37,10 +37,6 @@ Example rationale:
 - **Integrity:** High
 - **Availability:** None
 
-> The final CVSS score should be recalculated against the exact vulnerable endpoint and business impact demonstrated during the original assessment.
-
----
-
 ## Summary
 
 During security testing of the BigBasket application, a **price-tampering vulnerability** was identified in the purchase workflow.
@@ -126,14 +122,10 @@ For example:
 
 ```text
 Product:
-Example Product
 
 Displayed price:
 ₹999
 ```
-
-The exact product and values used during the original assessment should be documented separately if they are safe and authorized for disclosure.
-
 ---
 
 ### Step 2 — Add the product to the cart
@@ -145,11 +137,11 @@ Observe the information exchanged between the client and server.
 Conceptually, the application may send information similar to:
 
 ```http
-POST /[REDACTED]/cart HTTP/2
-Host: [REDACTED]
+POST /[xxxxxx]/cart HTTP/2
+Host: [xxxxx]
 
 {
-  "product_id": "[REDACTED]",
+  "product_id": "[xxxxxx]",
   "quantity": 1,
   "price": 999
 }
@@ -180,7 +172,7 @@ For example:
 
 ```json
 {
-  "product_id": "[REDACTED]",
+  "product_id": "[xxxxxx]",
   "quantity": 1,
   "price": 999
 }
@@ -190,13 +182,12 @@ could be changed in the controlled test to:
 
 ```json
 {
-  "product_id": "[REDACTED]",
+  "product_id": "[xxxxxx]",
   "quantity": 1,
   "price": 99
 }
 ```
 
-The actual values from the original test should only be included if they are safe to disclose.
 
 ---
 
@@ -230,13 +221,13 @@ There is no need to:
 ### Original request
 
 ```http
-POST /[REDACTED]/cart/update HTTP/2
-Host: [REDACTED]
+POST /[xxxxxx]/cart/update HTTP/2
+Host: [xxxxxx]
 Content-Type: application/json
-Authorization: [REDACTED]
+Authorization: [xxxxxxx]
 
 {
-  "product_id": "[REDACTED]",
+  "product_id": "[xxxxxx]",
   "quantity": 1,
   "price": 999
 }
@@ -245,13 +236,13 @@ Authorization: [REDACTED]
 ### Modified request
 
 ```http
-POST /[REDACTED]/cart/update HTTP/2
-Host: [REDACTED]
+POST /[xxxxxx]/cart/update HTTP/2
+Host: [xxxxxx]
 Content-Type: application/json
-Authorization: [REDACTED]
+Authorization: [xxxxxx]
 
 {
-  "product_id": "[REDACTED]",
+  "product_id": "[xxxxxx]",
   "quantity": 1,
   "price": 99
 }
@@ -269,8 +260,7 @@ Content-Type: application/json
 }
 ```
 
-The values above are illustrative/sanitized. Replace them with your actual evidence only after removing credentials, cookies, tokens, customer information, and other sensitive data.
-
+The values above are illustrative/sanitized.
 ---
 
 ## Expected vs. Actual Behavior
@@ -340,8 +330,6 @@ Potential consequences include:
 - Revenue leakage.
 - Integrity issues in order records.
 - Potential abuse at scale if no additional controls exist.
-
-The exact business impact depends on the affected endpoint and whether downstream payment systems independently validate the final amount.
 
 ---
 
@@ -439,20 +427,9 @@ using only controlled test environments or authorized accounts.
 
 ## Disclosure / Acknowledgement Information
 
-**Disclosure type:** Bug bounty / responsible security research
+**Disclosure type:** responsible security research
 
 **Researcher:** Manojkumar Gurram
-
-The public version of this writeup intentionally excludes:
-
-- authentication tokens,
-- cookies,
-- customer information,
-- order identifiers,
-- internal infrastructure details,
-- sensitive production requests.
-
----
 
 ## Lessons Learned
 
