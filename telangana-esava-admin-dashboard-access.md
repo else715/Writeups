@@ -1,4 +1,4 @@
-# Telangana Government eSava - Admin Dashboard Access
+#  state Government eSava - Admin Dashboard Access
 
 ## Title
 
@@ -6,7 +6,7 @@
 
 ## Target
 
-**Telangana Government eSava**
+**state Government eSava**
 
 ## Vulnerability Type
 
@@ -36,7 +36,7 @@ For example, if the issue allowed unrestricted modification of sensitive records
 
 ## Summary
 
-During authorized security testing of the Telangana Government eSava application, a **broken access-control vulnerability** was identified.
+During authorized security testing of the state Government eSava application, a **broken access-control vulnerability** was identified.
 
 The application allowed an unauthorized user context to reach functionality intended for administrative users.
 
@@ -143,7 +143,7 @@ For documentation:
 
 ```text
 Administrative resource:
-[REDACTED]
+[xxxxx]
 ```
 
 ---
@@ -155,9 +155,9 @@ Request the restricted resource using the authorized lower-privileged account.
 A sanitized example:
 
 ```http
-GET /[REDACTED]/admin/[REDACTED] HTTP/2
-Host: [REDACTED]
-Cookie: [REDACTED]
+GET /[xxxxxx]/admin/[xxxxxx] HTTP/2
+Host: [xxxxxx]
+Cookie: [xxxxxx]
 ```
 
 The important security question is whether the server checks the user's authorization before returning the administrative resource.
@@ -201,10 +201,10 @@ This is especially important for government infrastructure.
 ### Sanitized request
 
 ```http
-GET /[REDACTED]/admin/dashboard HTTP/2
-Host: [REDACTED]
-Cookie: session=[REDACTED]
-Authorization: [REDACTED]
+GET /[xxxxxx]/admin/dashboard HTTP/2
+Host: [xxxxxx]
+Cookie: session=[xxxxxx]
+Authorization: [xxxxxx]
 ```
 
 ### Expected response
@@ -435,19 +435,5 @@ Frontend restrictions are useful for user experience, but they are not security 
 
 For government applications in particular, broken access control should be treated seriously because the potential confidentiality, integrity, and public-service consequences can be significant.
 
-## Responsible Disclosure Note
-
-This writeup intentionally provides a sanitized description of the vulnerability.
-
-It does not contain:
-
-- government credentials,
-- authentication tokens,
-- citizen data,
-- private records,
-- live administrative session information,
-- destructive commands,
-- persistence techniques,
-- instructions for compromising the service.
 
 Testing government infrastructure should always remain within explicit authorization and responsible-disclosure boundaries.
