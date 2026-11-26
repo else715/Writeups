@@ -33,8 +33,6 @@ The exact score depends on:
 - what functionality becomes available after bypass,
 - whether additional authentication controls remain in place.
 
-The final score should therefore be calculated against the exact affected workflow.
-
 ---
 
 ## Summary
@@ -142,19 +140,14 @@ Using an authorized interception proxy, observe the request responsible for vali
 A sanitized example:
 
 ```http
-POST /[REDACTED]/verify HTTP/2
-Host: [REDACTED]
+POST /[xxxxx]/verify HTTP/2
+Host: [xxxxxxx]
 Content-Type: application/json
 
 {
-  "user_id": "[REDACTED]",
-  "otp": "[REDACTED]"
+  "user_id": "[xxxxxxx]",
+  "otp": "[xxxxxx]"
 }
-```
-
-The actual endpoint and parameters should not be published if the disclosure program prohibits them.
-
----
 
 ### Step 3 — Analyze the verification state
 
@@ -201,13 +194,13 @@ If the application instead establishes an authenticated or verified session, the
 ### Sanitized verification request
 
 ```http
-POST /[REDACTED]/otp/verify HTTP/2
-Host: [REDACTED]
+POST /[xxxxxx]/otp/verify HTTP/2
+Host: [xxxxxx]
 Content-Type: application/json
 
 {
-  "identifier": "[REDACTED]",
-  "otp": "[REDACTED]"
+  "identifier": "[xxxxxx]",
+  "otp": "[xxxxxx]"
 }
 ```
 
@@ -223,19 +216,6 @@ Content-Type: application/json
 }
 ```
 
-The example is intentionally sanitized.
-
-Do not publish:
-
-- real OTPs,
-- session cookies,
-- authorization headers,
-- phone numbers,
-- email addresses,
-- customer IDs,
-- authentication tokens.
-
----
 
 ## Expected vs. Actual Behavior
 
