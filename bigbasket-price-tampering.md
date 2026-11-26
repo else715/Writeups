@@ -242,10 +242,6 @@ price = altered decimal value
 price = altered currency value
 ```
 
-using only controlled test environments or authorized accounts.
-
----
-
 ## Disclosure / Acknowledgement Information
 
 **Disclosure type:** Bug bounty / responsible security research
@@ -261,9 +257,7 @@ The public version of this writeup intentionally excludes:
 - internal infrastructure details,
 - sensitive production requests.
 
-If the original program provided a disclosure acknowledgement, add it here:
 
-```text
 Acknowledgement:
 [Insert official acknowledgement, bounty reference, or disclosure date]
 ```
