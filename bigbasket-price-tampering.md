@@ -452,13 +452,6 @@ The public version of this writeup intentionally excludes:
 - internal infrastructure details,
 - sensitive production requests.
 
-If the original program provided a disclosure acknowledgement, add it here:
-
-```text
-Acknowledgement:
-[Insert official acknowledgement, bounty reference, or disclosure date]
-```
-
 ---
 
 ## Lessons Learned
