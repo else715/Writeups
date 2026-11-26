@@ -1,4 +1,4 @@
-# BigBasket — Price Tampering
+# BigBasket - Price Tampering
 
 ## Title
 
@@ -118,13 +118,158 @@ No attempt should be made to complete an unauthorized purchase or cause financia
 
 ## Detailed Reproduction Methodology
 
-> Reproduction steps omitted from the public version.
+### Step 1 — Identify a product
+
+Select a product through the normal application interface.
+
+For example:
+
+```text
+Product:
+Example Product
+
+Displayed price:
+₹999
+```
+
+The exact product and values used during the original assessment should be documented separately if they are safe and authorized for disclosure.
+
+---
+
+### Step 2 — Add the product to the cart
+
+Add the product to the shopping cart.
+
+Observe the information exchanged between the client and server.
+
+Conceptually, the application may send information similar to:
+
+```http
+POST /[REDACTED]/cart HTTP/2
+Host: [REDACTED]
+
+{
+  "product_id": "[REDACTED]",
+  "quantity": 1,
+  "price": 999
+}
+```
+
+The above is a **sanitized representation**, not the original production request.
+
+---
+
+### Step 3 — Inspect the request
+
+Using an authorized interception proxy, inspect the request and determine whether the price is:
+
+- calculated entirely on the server, or
+- transmitted by the client and subsequently trusted.
+
+The important security question is:
+
+> Does the backend independently determine the price associated with `product_id`?
+
+---
+
+### Step 4 — Modify the price value
+
+During an authorized test, modify the relevant price value.
+
+For example:
+
+```json
+{
+  "product_id": "[REDACTED]",
+  "quantity": 1,
+  "price": 999
+}
+```
+
+could be changed in the controlled test to:
+
+```json
+{
+  "product_id": "[REDACTED]",
+  "quantity": 1,
+  "price": 99
+}
+```
+
+The actual values from the original test should only be included if they are safe to disclose.
+
+---
+
+### Step 5 — Submit the modified request
+
+Forward the request and observe the server's response.
+
+A secure implementation would recalculate the amount using authoritative backend data.
+
+An affected implementation may instead reflect the manipulated amount in the resulting transaction state.
+
+---
+
+### Step 6 — Verify the result safely
+
+The purpose of validation is to establish that the server accepted an unauthorized price modification.
+
+Testing should stop once this behavior has been demonstrated.
+
+There is no need to:
+
+- complete a fraudulent purchase,
+- exploit the issue repeatedly,
+- target other customers,
+- manipulate real financial transactions.
 
 ---
 
 ## Request / Response Example
 
-> Request and response examples omitted from the public version.
+### Original request
+
+```http
+POST /[REDACTED]/cart/update HTTP/2
+Host: [REDACTED]
+Content-Type: application/json
+Authorization: [REDACTED]
+
+{
+  "product_id": "[REDACTED]",
+  "quantity": 1,
+  "price": 999
+}
+```
+
+### Modified request
+
+```http
+POST /[REDACTED]/cart/update HTTP/2
+Host: [REDACTED]
+Content-Type: application/json
+Authorization: [REDACTED]
+
+{
+  "product_id": "[REDACTED]",
+  "quantity": 1,
+  "price": 99
+}
+```
+
+### Sanitized response
+
+```http
+HTTP/2 200 OK
+Content-Type: application/json
+
+{
+  "success": true,
+  "total": 99
+}
+```
+
+The values above are illustrative/sanitized. Replace them with your actual evidence only after removing credentials, cookies, tokens, customer information, and other sensitive data.
 
 ---
 
@@ -148,9 +293,35 @@ Quantity calculation
 Final payable amount
 ```
 
+For example:
+
+```text
+Client sends:
+price = ₹99
+
+Server:
+Product price = ₹999
+
+Final server-side price:
+₹999
+```
+
 ### Actual
 
 The tested workflow allowed the client-controlled price value to influence the transaction calculation.
+
+Conceptually:
+
+```text
+Client sends:
+price = ₹99
+
+Server accepts:
+₹99
+
+Transaction total:
+₹99
+```
 
 This demonstrated insufficient server-side validation of a security-sensitive financial parameter.
 
@@ -176,7 +347,27 @@ The exact business impact depends on the affected endpoint and whether downstrea
 
 ## Attack Scenario
 
-> Attack sequence omitted from the public version.
+A malicious user could potentially:
+
+```text
+Normal product
+      ↓
+Observe legitimate transaction request
+      ↓
+Identify client-controlled price
+      ↓
+Modify price
+      ↓
+Submit modified request
+      ↓
+Backend accepts manipulated amount
+      ↓
+Reduced transaction value
+```
+
+An attacker could potentially automate this behavior if the vulnerable endpoint does not have additional server-side protections.
+
+The attack does not require compromising the application's infrastructure; it exploits the application's trust in client-controlled transaction data.
 
 ---
 
@@ -242,6 +433,10 @@ price = altered decimal value
 price = altered currency value
 ```
 
+using only controlled test environments or authorized accounts.
+
+---
+
 ## Disclosure / Acknowledgement Information
 
 **Disclosure type:** Bug bounty / responsible security research
@@ -257,7 +452,9 @@ The public version of this writeup intentionally excludes:
 - internal infrastructure details,
 - sensitive production requests.
 
+If the original program provided a disclosure acknowledgement, add it here:
 
+```text
 Acknowledgement:
 [Insert official acknowledgement, bounty reference, or disclosure date]
 ```
